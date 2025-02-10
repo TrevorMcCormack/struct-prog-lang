@@ -38,16 +38,11 @@ def tokenize(characters):
             "value" : match.group(0)
 
         }
-<<<<<<< HEAD
-        if token["tag"] == "number":    # check if it is a number
-            token["value"] = int(token["value"]) # turns token into integer rather than string
-=======
         if token["tag"] == "number":
             if "." in token["value"]:
                 token["value"] = float(token["value"])
             else:
                 token["value"] = int(token["value"])
->>>>>>> upstream/main
         if token["tag"] != "whitespace":
             tokens.append(token)
         position = match.end()
@@ -77,14 +72,11 @@ def test_number_token():
         assert len(t) == 2
         assert t[0]["tag"] == "number"
         assert t[0]["value"] == int(s)
-<<<<<<< HEAD
-=======
     for s in ["1.1","11.11","11.",".11"]:
         t = tokenize(s)
         assert len(t) == 2
         assert t[0]["tag"] == "number"
         assert t[0]["value"] == float(s)
->>>>>>> upstream/main
 
 
 def test_multiple_tokens():
