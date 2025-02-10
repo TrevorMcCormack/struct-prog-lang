@@ -3,7 +3,9 @@ import re
 # define patterns for tokens
 
 patterns = [
-    [r"\d+", "number"],
+    [r"print","print"],
+    [r"\d*\.\d+|\d+\.\d*|\d+", "number"],
+    [r"[a-zA-Z_][a-zA-Z0-9_]*", "identifier"],  # identifiers
     [r"\+", "+"],
     [r"\-", "-"],
     [r"\*", "*"],
@@ -36,8 +38,16 @@ def tokenize(characters):
             "value" : match.group(0)
 
         }
+<<<<<<< HEAD
         if token["tag"] == "number":    # check if it is a number
             token["value"] = int(token["value"]) # turns token into integer rather than string
+=======
+        if token["tag"] == "number":
+            if "." in token["value"]:
+                token["value"] = float(token["value"])
+            else:
+                token["value"] = int(token["value"])
+>>>>>>> upstream/main
         if token["tag"] != "whitespace":
             tokens.append(token)
         position = match.end()
@@ -67,6 +77,14 @@ def test_number_token():
         assert len(t) == 2
         assert t[0]["tag"] == "number"
         assert t[0]["value"] == int(s)
+<<<<<<< HEAD
+=======
+    for s in ["1.1","11.11","11.",".11"]:
+        t = tokenize(s)
+        assert len(t) == 2
+        assert t[0]["tag"] == "number"
+        assert t[0]["value"] == float(s)
+>>>>>>> upstream/main
 
 
 def test_multiple_tokens():
@@ -89,6 +107,26 @@ def test_whitespace():
                       ]
     
 
+def test_keywords():
+    print("test keywords...")
+    for keyword in [
+        "print",
+    ]:
+        t = tokenize(keyword)
+        assert len(t) == 2
+        assert t[0]["tag"] == keyword, f"expected {keyword}, got {t[0]}"
+        assert "value" not in t
+
+def test_identifier_tokens():
+    print("test identifier tokens...")
+    for s in ["x", "y", "z", "alpha", "beta", "gamma"]:
+        t = tokenize(s)
+        assert len(t) == 2
+        assert t[0]["tag"] == "identifier"
+        assert t[0]["value"] == s
+
+
+
 def test_error():
     print("test errors")
     try:
@@ -103,4 +141,6 @@ if __name__ == "__main__":
     test_number_token()
     test_multiple_tokens()
     test_whitespace()
+    test_keywords()
+    test_identifier_tokens()
     test_error()

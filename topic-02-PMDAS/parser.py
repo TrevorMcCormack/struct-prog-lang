@@ -8,6 +8,7 @@ Accept a string of tokens, return an AST expressed as stack of dictionaries
 """
 
 """
+<<<<<<< HEAD
    # simple_expression = number | "(" expression ")" | "-" simple_expression
    # factor = simple_expression
 
@@ -15,6 +16,12 @@ Accept a string of tokens, return an AST expressed as stack of dictionaries
     term = factor { "*" | "/" factor }
     arithmetic_expression = term { "+" | "-" term }
     expression = arithmetic_expression
+=======
+    factor = <number> | <identifier> | "(" expression ")"
+    term = factor { "*"|"/" factor }
+    expression = term { "+"|"-" term }
+    statement = <print> expression | expression
+>>>>>>> upstream/main
 """
 
 def parse_factor(tokens):
@@ -23,6 +30,7 @@ def parse_factor(tokens):
     """
     token = tokens[0]
     if token["tag"] == "number":
+<<<<<<< HEAD
         return { 
             "tag" : "number",
             "value" : token["value"]
@@ -39,6 +47,21 @@ def parse_factor(tokens):
 def test_parse_factor():
     """
     factor = <number> | "(" expression ")"
+=======
+        return {
+            "tag":"number",
+            "value": token["value"]
+        }, tokens[1:]
+    if token["tag"] == "(":
+        ast, tokens = parse_expression(tokens[1:])
+        assert tokens[0]["tag"] == ")"
+        return ast, tokens[1:]
+    raise Exception(f"Unexpected token '{token['tag']}' at position {token['position']}.")
+
+def test_parse_factor():
+    """
+    factor = <number> | <identifier> | "(" expression ")"
+>>>>>>> upstream/main
     """
     print("Testing parse_factor()")
 
@@ -47,6 +70,15 @@ def test_parse_factor():
         ast, tokens = parse_factor(tokens)
         assert ast == {'tag': 'number', 'value': int(s)}
         assert tokens[0]['tag'] == None 
+    for s in ["(1)","(22)"]:
+        tokens = tokenize(s)
+        ast, tokens = parse_factor(tokens)
+        s_n = s.replace("(","").replace(")","")
+        assert ast=={'tag': 'number', 'value': int(s_n)}
+        assert tokens[0]['tag'] == None 
+    tokens = tokenize("(2+3)")
+    ast, tokens = parse_factor(tokens)
+    assert ast == {'tag': '+', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 3}}
 
     for s in ["(1)", "(22)"]:
         tokens = tokenize(s)
@@ -124,11 +156,15 @@ def test_parse_expression():
     tokens = tokenize("1+2*4")
     ast, tokens = parse_expression(tokens)
     assert ast == {'tag': '+', 'left': {'tag': 'number', 'value': 1}, 'right': {'tag': '*', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 4}}}
+<<<<<<< HEAD
     
+=======
+>>>>>>> upstream/main
     tokens = tokenize("1+(2+3)*4")
     ast, tokens = parse_expression(tokens)
     assert ast == {'tag': '+', 'left': {'tag': 'number', 'value': 1}, 'right': {'tag': '*', 'left': {'tag': '+', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 3}}, 'right': {'tag': 'number', 'value': 4}}}
 
+<<<<<<< HEAD
 
 def parse_expression(tokens):
     """
@@ -148,9 +184,48 @@ def parse(tokens):
     ast = parse_expression(tokens)[0]
     return ast
 
+=======
+def parse_statement(tokens):
+    """
+    statement = <print> expression | expression
+    """
+    if tokens[0]["tag"] == "print":
+        value_ast, tokens = parse_expression(tokens[1:])
+        ast = {
+            'tag':'print',
+            'value': value_ast
+        }
+
+    else:
+        ast, tokens = parse_expression(tokens)
+    return ast, tokens
+
+def test_parse_statement():
+    """
+    statement = <print> expression | expression
+    """
+    print("testing parse_statement()")
+    tokens = tokenize("1+(2+3)*4")
+    ast, tokens = parse_statement(tokens)
+    assert ast == {'tag': '+', 'left': {'tag': 'number', 'value': 1}, 'right': {'tag': '*', 'left': {'tag': '+', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 3}}, 'right': {'tag': 'number', 'value': 4}}}
+    tokens = tokenize("print 2*4")
+    ast, tokens = parse_statement(tokens)
+    assert ast == {'tag': 'print', 'value': {'tag': '*', 'left': {'tag': 'number', 'value': 2}, 'right': {'tag': 'number', 'value': 4}}}
+
+
+
+def parse(tokens):
+    ast, tokens = parse_statement(tokens)
+    return ast
+>>>>>>> upstream/main
 
 if __name__ == "__main__":
     test_parse_factor()
     test_parse_term()
     test_parse_expression()
+<<<<<<< HEAD
     print("Done")
+=======
+    test_parse_statement()
+    print("done.")
+>>>>>>> upstream/main
