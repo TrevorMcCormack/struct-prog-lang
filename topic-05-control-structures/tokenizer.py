@@ -3,6 +3,7 @@ import re
 # Define patterns for tokens
 patterns = [
     [r"print","print"],
+<<<<<<< HEAD
     [r"if", "if"],
     [r"else", "else"],
     [r"while", "while"],
@@ -10,6 +11,15 @@ patterns = [
     [r"break", "break"],
     [r"return", "return"],
     [r"assert", "assert"],
+=======
+    [r"if","if"],
+    [r"else","else"],
+    [r"while","while"],
+    [r"continue","continue"],
+    [r"break","break"],
+    [r"return","return"],
+    [r"assert","assert"],
+>>>>>>> 41224e778f4ccefc3f6f25340fea46f2880dd753
     [r"\d*\.\d+|\d+\.\d*|\d+", "number"],
     [r"[a-zA-Z_][a-zA-Z0-9_]*", "identifier"],  # identifiers
     [r"\+", "+"],
@@ -18,6 +28,10 @@ patterns = [
     [r"\/", "/"],
     [r"\(", "("],
     [r"\)", ")"],
+<<<<<<< HEAD
+=======
+    [r"\)", ")"],
+>>>>>>> 41224e778f4ccefc3f6f25340fea46f2880dd753
     [r"==", "=="],
     [r"!=", "!="],
     [r"<=", "<="],
@@ -114,6 +128,7 @@ def test_whitespace():
     assert tokens == [{'tag': 'number', 'position': 0, 'value': 1}, {'tag': '+', 'position': 2, 'value': '+'}, {'tag': 'number', 'position': 4, 'value': 2}, {'tag': None, 'value': None, 'position': 5}]
 
 def test_keywords():
+<<<<<<< HEAD
     [r"if", "if"],
     [r"else", "else"],
     [r"while", "while"],
@@ -124,6 +139,11 @@ def test_keywords():
     print("test keywords...")
     for keyword in [
         "print", "if", "else", "while", "continue", "break", "return", "assert"
+=======
+    print("test keywords...")
+    for keyword in [
+        "print","if","else","while","continue","break","return","assert"
+>>>>>>> 41224e778f4ccefc3f6f25340fea46f2880dd753
     ]:
         t = tokenize(keyword)
         assert len(t) == 2
