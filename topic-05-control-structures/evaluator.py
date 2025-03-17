@@ -57,7 +57,7 @@ def evaluate(ast, environment={}):
             parent_environment = environment["$parent"]
             if ast["value"] in parent_environment:
                 return parent_environment[ast["value"]]
-        raise Exception(f"Value [{ast["value"]}] not found in environment {environment}.")
+        raise Exception(f"Value [{ast['value']}] not found in environment {environment}.")
     
     if ast["tag"] in ["+", "-", "*", "/"]:
         left_value = evaluate(ast["left"], environment)

@@ -38,7 +38,6 @@ def parse_factor(tokens):
         ast, tokens = parse_expression(tokens[1:])
         assert tokens[0]["tag"] == ")"
         return ast, tokens[1:]
-    
     if token["tag"] == "!":
         ast, tokens = parse_expression(tokens[1:])
         return {"tag": "!", "value": ast}, tokens
@@ -93,6 +92,7 @@ def test_parse_factor():
     assert ast == {'tag': 'negate', 'value': {'tag': '+', 'left': {'tag': 'identifier', 'value': 'x'}, 'right': {'tag': 'number', 'value': 3}}}
 
     tokens = tokenize("!1")
+    print("TEST TOKENS:", tokens)
     ast, tokens = parse_factor(tokens)
     assert ast == {'tag': '!', 'value': {'tag': 'number', 'value': 1}}
 
@@ -520,8 +520,9 @@ def test_parse_if_statement():
     assert ast == {'tag': 'if', 'condition': {'tag': 'number', 'value': 1}, 'then': {'tag': 'block', 'statements': [{'tag': 'print', 'value': {'tag': 'number', 'value': 2}}]}, 'else': None}
 
     ast, _ = parse_if_statement(tokenize("if(1){print(2)}else{print(3)}"))
-    print(ast)
-    exit(0)
+    assert ast == {'tag': 'if', 'condition': {'tag': 'number', 'value': 1}, 'then': {'tag': 'block', 'statements': [{'tag': 'print', 'value': {'tag': 'number', 'value': 2}}]}, 'else': {'tag': 'block', 'statements': [{'tag': 'print', 'value': {'tag': 'number', 'value': 3}}]}}
+    #print(ast)
+    #exit(0)
 
 
 def parse_while_statement(tokens):
@@ -548,8 +549,8 @@ def test_parse_while_statement():
     assert ast == {'tag': 'while', 'condition': {'tag': 'number', 'value': 1}, 'do': {'tag': 'block', 'statements': [{'tag': 'print', 'value': {'tag': 'number', 'value': 2}}]}}
    
     #ast, _ = parse_if_statement(tokenize("if(1){print(2)}else{print(3)}"))
-    print(ast)
-    exit(0)
+    #print(ast)
+    #exit(0)
 
     
 def parse_assignment_statement(tokens):
@@ -653,7 +654,7 @@ def parse_program(tokens):
             tokens = tokens[1:]
             statement, tokens = parse_statement(tokens)
             statements.append(statement)
-            
+
     assert (
         tokens[0]["tag"] == None
     ), f"Expected end of input at position {tokens[0]['position']}, got [{tokens[0]}]"

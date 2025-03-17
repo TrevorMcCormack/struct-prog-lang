@@ -29,9 +29,9 @@ patterns = [
     [r">", ">"],
     [r"\=", "="],
     [r"\;", ";"],
-    [r"\&\&", "and"],
-    [r"\|\|", "or"],
-    [r"\!", "not"],
+    [r"\&\&", "&&"],
+    [r"\|\|", "||"],
+    [r"\!", "!"],
     [r"\{", "{"],
     [r"\}", "}"],
     [r"\[", "["],
@@ -130,7 +130,7 @@ def test_keywords():
     [r"return", "return"],
     [r"assert", "assert"],
     print("test keywords...")
-    
+
     for keyword in [
         "print", "if", "else", "while", "continue", "break", "return", "assert"
     ]:
