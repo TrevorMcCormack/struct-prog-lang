@@ -21,6 +21,7 @@ patterns = [
     [r"\/", "/"],
     [r"\(", "("],
     [r"\)", ")"],
+    [r"\)", ")"],
     [r"==", "=="],
     [r"!=", "!="],
     [r"<=", "<="],
@@ -47,7 +48,6 @@ for pattern in patterns:
 def tokenize(characters):
     tokens = []
     position = 0
-
     while position < len(characters):
         for pattern, tag in patterns:
             match = pattern.match(characters, position)
@@ -62,7 +62,6 @@ def tokenize(characters):
             "position":position,
             "value":match.group(0)
         }
-
         if token["tag"] == "number":
             if "." in token["value"]:
                 token["value"] = float(token["value"])
@@ -82,14 +81,12 @@ def tokenize(characters):
 def test_simple_token():
     print("test simple token")
     examples = "+-*/()=;<>{}[]."
-
     for example in examples:
         t = tokenize(example)[0]
         assert t["tag"] == example
         assert t["position"] == 0
         assert t["value"] == example
     examples = "==\t!=\t<=\t>=\t&&\t||\t!".split("\t")
-
     for example in examples:
         t = tokenize(example)[0]
         assert t["tag"] == example
@@ -103,7 +100,6 @@ def test_number_token():
         assert len(t) == 2
         assert t[0]["tag"] == "number"
         assert t[0]["value"] == int(s)
-
     for s in ["1.1","11.11","11.",".11"]:
         t = tokenize(s)
         assert len(t) == 2
@@ -122,17 +118,9 @@ def test_whitespace():
     assert tokens == [{'tag': 'number', 'position': 0, 'value': 1}, {'tag': '+', 'position': 2, 'value': '+'}, {'tag': 'number', 'position': 4, 'value': 2}, {'tag': None, 'value': None, 'position': 5}]
 
 def test_keywords():
-    [r"if", "if"],
-    [r"else", "else"],
-    [r"while", "while"],
-    [r"continue", "continue"],
-    [r"break", "break"],
-    [r"return", "return"],
-    [r"assert", "assert"],
     print("test keywords...")
-
     for keyword in [
-        "print", "if", "else", "while", "continue", "break", "return", "assert"
+        "print","if","else","while","continue","break","return","assert"
     ]:
         t = tokenize(keyword)
         assert len(t) == 2
