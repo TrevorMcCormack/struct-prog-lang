@@ -29,7 +29,8 @@ grammar = """
     return_statement = "return" [ expression ]
     assignment_statement = expression [ "=" expression ]
     function_statement = "function" identifier parameters block
-    statement = if_statement | while_statement | print_statement | function_statement | return_statement | assignment_statement
+    import_statement = "import" identifier [ "as" identifier ]
+    statement = import_statement | if_statement | while_statement | print_statement | function_statement | return_statement | assignment_statement
     program = [ statement { ";" statement } ]
 """
 
@@ -711,6 +712,36 @@ def test_parse_expression():
 
 # STATEMENTS
 
+def parse_import_statement(tokens):
+    """
+    import_statement = "import" identifier [ "as" identifier ]
+    """
+    assert tokens[0]["tag"] == "import", f"Expected 'import', got {tokens[0]}"
+    tokens = tokens[1:]
+    assert tokens[0]["tag"] == "identifier", f"Expected identifier, got {tokens[0]}"
+    module_name = tokens[0]["value"]
+    tokens = tokens[1:]
+    alias = None
+    if tokens[0]["tag"] == "as":
+        tokens = tokens[1:]
+        assert tokens[0]["tag"] == "identifier", f"Expected alias identifier, got {tokens[0]}"
+        alias = tokens[0]["value"]
+        tokens = tokens[1:]
+    return {"tag": "import", "module": module_name, "alias": alias}, tokens
+
+def test_parse_import_statement():
+    """
+    import_statement = "import" identifier [ "as" identifier ]
+    """
+    print("testing parse_import_statement...")
+    ast, tokens = parse_import_statement(tokenize("import math"))
+    assert ast == {'tag': 'import', 'module': 'math', 'alias': None}
+    assert tokens[0]["tag"] is None
+
+    ast, tokens = parse_import_statement(tokenize("import math as m"))
+    assert ast == {'tag': 'import', 'module': 'math', 'alias': 'm'}
+    assert tokens[0]["tag"] is None
+
 def parse_print_statement(tokens):
     """
     print_statement = "print" [ expression ]
@@ -886,11 +917,11 @@ def test_parse_function_statement():
 
 def parse_statement(tokens):
     """
-    statement = if_statement | while_statement | print_statement | function_statement | return_statement | assignment_statement
+    statement = import_statement | if_statement | while_statement | print_statement | function_statement | return_statement | assignment_statement
     """
     tag = tokens[0]["tag"]
-    if tag == "{":
-        return parse_block(tokens)
+    if tag == "import":
+        return parse_import_statement(tokens)
     if tag == "if":
         return parse_if_statement(tokens)
     if tag == "while":
@@ -899,11 +930,15 @@ def parse_statement(tokens):
         return parse_print_statement(tokens)
     if tag == "function":
         return parse_function_statement(tokens)
+    if tag == "return":
+        return parse_return_statement(tokens)
+    if tag == "{":
+        return parse_block(tokens)
     return parse_assignment_statement(tokens)
 
 def test_parse_statement():
     """
-    statement = if_statement | while_statement | print_statement | function_statement | return_statement | assignment_statement
+    statement = import_statement | if_statement | while_statement | print_statement | function_statement | return_statement | assignment_statement
     """
     print("testing parse_statement...")
     ast, _ = parse_statement(tokenize("print(1)"))
@@ -966,6 +1001,7 @@ if __name__ == "__main__":
         test_parse_logical_term,
         test_parse_logical_expression,
         test_parse_expression,
+        test_parse_import_statement,
         test_parse_print_statement,
         test_parse_if_statement,
         test_parse_while_statement,

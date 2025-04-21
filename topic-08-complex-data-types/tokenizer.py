@@ -2,6 +2,9 @@ import re
 
 # Define patterns for tokens
 patterns = [
+    [r"assert","assert"],
+    [r"import","import"],
+    [r"as","as"],
     [r"print","print"],
     [r"if","if"],
     [r"else","else"],
@@ -10,7 +13,6 @@ patterns = [
     [r"break","break"],
     [r"function","function"],
     [r"return","return"],
-    [r"assert","assert"],
     [r"and","and"],
     [r"or","or"],
     [r"not","not"],
@@ -20,6 +22,7 @@ patterns = [
     [r"\+", "+"],
     [r"\-", "-"],
     [r"\*", "*"],
+    [r"//[^\n]*", "whitespace"],
     [r"\/", "/"],
     [r"\(", "("],
     [r"\)", ")"],
@@ -150,11 +153,13 @@ def test_whitespace():
     print("test whitespace")
     tokens = tokenize("1 + 2")
     assert tokens == [{'tag': 'number', 'position': 0, 'value': 1}, {'tag': '+', 'position': 2, 'value': '+'}, {'tag': 'number', 'position': 4, 'value': 2}, {'tag': None, 'value': None, 'position': 5}]
+    tokens = tokenize("1 + 2 // Add two numbers together")
+    assert tokens == [{'tag': 'number', 'position': 0, 'value': 1}, {'tag': '+', 'position': 2, 'value': '+'}, {'tag': 'number', 'position': 4, 'value': 2}, {'tag': None, 'value': None, 'position': 33}]
 
 def test_keywords():
     print("test keywords...")
     for keyword in [
-        "print","if","else","while","continue","break","return","assert","function","not","and","or"
+        "print","if","else","while","continue","break","return","assert","function","not","and","or","import","as"
     ]:
         t = tokenize(keyword)
         assert len(t) == 2
