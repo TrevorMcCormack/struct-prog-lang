@@ -35,9 +35,9 @@ grammar = """
     import_statement = "import" expression
     break_statement = "break"
     continue_statement = "continue"
+    kentid_statement = "tmccorm6"
 
-    statement = if_statement | while_statement | function_statement | return_statement | print_statement | exit_statement | import_statement | break_statement | continue_statement | assert_statement | expression
-
+    statement = if_statement | while_statement | function_statement | return_statement | print_statement | exit_statement | import_statement | break_statement | continue_statement | assert_statement | expression | kentid_statement
     program = [ statement { ";" statement } ]
     """
 
@@ -1153,7 +1153,7 @@ def test_parse_function_statement():
 
 def parse_statement(tokens):
     """
-    statement = if_statement | while_statement | function_statement | return_statement | print_statement | exit_statement | import_statement | break_statement | continue_statement | assert_statement | expression
+    statement = if_statement | while_statement | function_statement | return_statement | print_statement | exit_statement | import_statement | break_statement | continue_statement | assert_statement | expression | kentid_statement
     """
     tag = tokens[0]["tag"]
     # note: none of these consumes a token
@@ -1177,12 +1177,14 @@ def parse_statement(tokens):
         return parse_continue_statement(tokens)
     if tag == "assert":
         return parse_assert_statement(tokens)
+    if tag == "_kentid_":
+        return parse_kentid_statement(tokens)
     return parse_expression(tokens)
 
 
 def test_parse_statement():
     """
-    statement = if_statement | while_statement | function_statement | return_statement | print_statement | exit_statement | import_statement | break_statement | continue_statement | assert_statement | expression
+    statement = if_statement | while_statement | function_statement | return_statement | print_statement | exit_statement | import_statement | break_statement | continue_statement | assert_statement | expression | kentid_statement
     """
     print("testing parse_statement...")
 
@@ -1306,6 +1308,21 @@ def test_parse():
         ],
     }
 
+def parse_kentid_statement(tokens):
+    """
+    kentid_statement = "tmccorm6"
+    """
+    assert tokens[0]["tag"] == "_kentid_"
+    tokens = tokens[1:]
+    return { "tag" : "_kentid_"}, tokens
+
+def test_parse_kentid_statement():
+    """
+    kentid_statement = "tmccorm6"
+    """
+    print("testing parse kentid statement")
+    assert parse_statement(tokenize("tmccorm6"))[0] == { "tag" : "_kentid_" }
+
 
 if __name__ == "__main__":
     # List of all test functions
@@ -1337,6 +1354,7 @@ if __name__ == "__main__":
         test_parse_assert_statement,
         test_parse_statement,
         test_parse_program,
+        test_parse_kentid_statement,
     ]
 
     test_grammar = grammar

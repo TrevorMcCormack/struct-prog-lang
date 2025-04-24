@@ -24,6 +24,7 @@ patterns = [
     [r"or", "||"],  # alternate for ||
     [r"not", "!"],  # alternate for !
     [r"assert","assert"],
+    [r"tmccorm6", "_kentid_"],
     [r"[a-zA-Z_][a-zA-Z0-9_]*", "identifier"],  # identifiers
     [r"\+", "+"],
     [r"\-", "-"],
@@ -265,6 +266,13 @@ def test_tag_coverage():
     for pattern, tag in patterns:
         assert tag in test_generated_tags, f"Tag [ {tag} ] was not tested."
 
+def test_kentid_token():
+    print("testing kentid token...")
+    t = tokenize("tmccorm6")
+    assert len(t) == 2
+    assert t[0]["tag"] == "_kentid_"
+    assert t[0]["value"] == "tmccorm6"
+
 
 if __name__ == "__main__":
     print("testing tokenizer.")
@@ -276,6 +284,7 @@ if __name__ == "__main__":
     test_whitespace()
     test_multiple_tokens()
     test_keywords()
+    test_kentid_token()
     test_comments()
     test_error()
     test_tag_coverage()

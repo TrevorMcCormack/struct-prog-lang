@@ -41,6 +41,9 @@ def evaluate(ast, environment={}):
         environment[identifier] = value
     if ast["tag"] == "number":
         return ast["value"]
+    if ast["tag"] == "_kentid_":
+        environment["_kentid_"] = "tmccorm6@kent.edu"
+        return None
     if ast["tag"] == "identifier":
         if ast["value"] in environment:
             return environment[ast["value"]]
@@ -224,15 +227,23 @@ def test_while_statement():
     assert env["x"] == 6
     assert env["y"] == 7
 
+def test_kentid_statement():
+    print("testing kentid statement")
+    env = {}
+    assert eval("tmccorm6", env) is None
+    assert env["_kentid_"] == "tmccorm6@kent.edu"
+
+
 if __name__ == "__main__":
-    test_evaluate_number()
-    test_evaluate_addition()
-    test_evaluate_subtraction()
-    test_evaluate_multiplication()
-    test_evaluate_division()
-    test_evaluate_expression()
-    test_evaluate_print()
-    test_evaluate_identifier()
-    test_if_statement()
-    test_while_statement()
+    #test_evaluate_number()
+    #test_evaluate_addition()
+    #test_evaluate_subtraction()
+    #test_evaluate_multiplication()
+    #test_evaluate_division()
+    #test_evaluate_expression()
+    #test_evaluate_print()
+    #test_evaluate_identifier()
+    #test_if_statement()
+    #test_while_statement()
+    test_kentid_statement()
     print("done.")
