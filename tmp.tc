@@ -1,0 +1,15 @@
+n = 9;
+x = 1;         // initial guess
+tolerance = 0.0001;
+delta = 1;
+
+while (delta > tolerance) {
+  prev = x;
+  x = (x + n / x) / 2;
+  delta = prev - x;
+  if (delta < 0) {
+    delta = 0 - delta;
+  };
+};
+
+print x;
