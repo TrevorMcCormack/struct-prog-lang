@@ -100,11 +100,11 @@ def ast_to_string(ast):
         return "(" + ",".join(items) + ")"
 
     if ast["tag"] == "complex":
-        s = f"{ast_to_string(ast["base"])}[{ast_to_string(ast["index"])}]"
+        s = f"{ast_to_string(ast['base'])}[{ast_to_string(ast['index'])}]"
         return s
 
     if ast["tag"] == "assign":
-        s = f"{ast_to_string(ast["target"])} = {ast_to_string(ast["value"])}]"
+        s = f"{ast_to_string(ast['target'])} = {ast_to_string(ast['value'])}]"
         return s
 
     if ast["tag"] == "return":
@@ -143,16 +143,16 @@ def evaluate(ast, environment):
         assert type(ast["value"]) in [
             float,
             int,
-        ], f"unexpected type {type(ast["value"])}"
+        ], f"unexpected type {type(ast['value'])}"
         return ast["value"], None
     if ast["tag"] == "boolean":
         assert ast["value"] in [
             True,
             False,
-        ], f"unexpected type {type(ast["value"])}"
+        ], f"unexpected type {type(ast['value'])}"
         return ast["value"], None
     if ast["tag"] == "string":
-        assert type(ast["value"]) == str, f"unexpected type {type(ast["value"])}"
+        assert type(ast["value"]) == str, f"unexpected type {type(ast['value'])}"
         return ast["value"], None
     if ast["tag"] == "null":
         return None, None
@@ -199,7 +199,7 @@ def evaluate(ast, environment):
         types = type_of(left_value, right_value)
         if types == "number-number":
             return left_value - right_value, None
-        raise Exception(f"Illegal types for {ast["tag"]}:{types}")
+        raise Exception(f"Illegal types for {ast['tag']}:{types}")
 
     if ast["tag"] == "*":
         left_value, _ = evaluate(ast["left"], environment)
@@ -314,6 +314,27 @@ def evaluate(ast, environment):
             if exit_status:
                 return condition_value, exit_status
         return None, False
+    
+    if ast["tag"] == "switch":
+        value = evaluate(ast["expression"], environment)
+        for case in ast["cases"]:
+            case_value = evaluate(case["value"], environment)
+            if value == case_value:
+                for statement in case["body"]["statements"]:
+                    result, exit_status = evaluate(statement, environment)
+                    if exit_status == "break":
+                        return None, None
+                    if result is not None:
+                        return result, None
+                return None, None
+            
+        for statement in ast["default"]["statements"]:
+            result, exit_status = evaluate(statement, environment)
+            if exit_status == "break":
+                return None, None
+            if result is not None:
+                return result, None
+        return None, None
 
     if ast["tag"] == "statement_list":
         for statement in ast["statements"]:
@@ -431,6 +452,34 @@ def equals(code, environment, expected_result, expected_environment=None):
         -- got --
         {[environment]}."""
 
+
+def test_evaluate_switch_statement():
+    print("testing evaluate switch statement")
+    environment = {}
+
+    code = """
+        x = 2;
+        switch(x) {
+            case 1: print "four";
+            case 2: print "three";
+            case 3: print "two";
+            default: print "one";
+        }
+    """
+
+    evaluate(parse(tokenize(code)), environment)
+
+    code = """
+        x = 15;
+        switch(x) {
+            case 1: print "four";
+            case 2: print "three";
+            case 3: print "two";
+            default: print "one";
+        }
+    """
+
+    evaluate(parse(tokenize(code)), environment)    
 
 def test_evaluate_single_value():
     print("test evaluate single value")
@@ -760,4 +809,5 @@ if __name__ == "__main__":
     test_evaluate_object_literal()
     test_evaluate_builtins()
     test_evaluator_with_new_tags()
+    test_evaluate_switch_statement()
     print("done.")

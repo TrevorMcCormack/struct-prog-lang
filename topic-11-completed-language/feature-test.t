@@ -152,4 +152,38 @@ obj = {"list": [0,1,2], "value": {"inner": 5}};
 assert obj["list"][1] == 1;
 assert obj.value.inner == 5;
 
+
+// ------------------------------------------------------------
+// Switch Statements
+// ------------------------------------------------------------
+print("Testing switch statements...");
+x = 5;
+switch(x) {
+    case 1:
+        x = 55;
+    case 2:
+        x = 65;
+    case 3: 
+        x = 75;
+    default:
+        x = 45;
+};
+assert x == 45;
+
+y = 2;
+switch(y) {
+    case 1:
+        y = 55;
+    case 2:
+        y = 65;
+    case 3: 
+        y = 75;
+    default:
+        y = 45;
+};
+assert y == 65;
+
+
+
+
 print("Feature test complete.");

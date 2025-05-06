@@ -20,6 +20,9 @@ patterns = [
     [r"external", "external"],  # external keyword
     [r"input", "input"],  # function keyword
     [r"exit", "exit"],  # exit keyword
+    [r"switch", "switch"],  
+    [r"case", "case"],  
+    [r"default", "default"],  
     [r"and", "&&"],  # alternate for &&
     [r"or", "||"],  # alternate for ||
     [r"not", "!"],  # alternate for !
@@ -233,6 +236,9 @@ def test_keywords():
         "input",
         "print",
         "exit",
+        "switch",
+        "case",
+        "default",
     ]:
         t = tokenize(keyword)
         assert len(t) == 2
