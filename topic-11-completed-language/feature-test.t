@@ -183,6 +183,48 @@ switch(y) {
 };
 assert y == 65;
 
+b = 3;
+switch(b) {
+    case 1:
+        b = 10;
+    case 2:
+        b = 20;
+    case 3:
+        b = 30;
+    default:
+        b = 40;
+};
+assert b == 30;
+
+c = 99;
+switch(c) {
+    case 1:
+        c = 10;
+    case 2:
+        c = 20;
+    case 3:
+        c = 30;
+    default:
+        c = 40;
+};
+assert c == 40;
+
+d = 2;
+switch(d) {
+    case 2:
+        d = d + 8;
+    default:
+        d = 0;
+};
+assert d == 10;
+
+e = 100;
+switch(e) {
+    default:
+        e = 999;
+};
+assert e == 999;
+
 
 
 
